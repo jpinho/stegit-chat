@@ -23,7 +23,7 @@ var download = function(uri, filename, callback){
   });
 };
 
-download( theUrl , 'test.jpg', function(){
+download( theUrl , 'albums/test.jpg', function(){
   console.log('done');
 });
   
