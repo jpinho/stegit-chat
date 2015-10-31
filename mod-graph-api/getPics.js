@@ -1,6 +1,13 @@
 var FB = require('fb');
+var mkdirp = require('mkdirp');
 
 var access_token = 'CAACEdEose0cBAIMWZBU591wHhTO6nSj7fex9nYLpUnOMhkZAnDUyyGKiWZAAKcePSCwNEsh0YGTZCHHzvkZBKGL7zw6mkzXv8Us6kDZCZAj6rlp3ZAY8UuBEMQPbUCCfCvdLHgVZBCsYx1fZCAKNZAhjEyU6jbWNINiy18ngH07b5vY9tDUcrkwfWIuvpxtpaxxsyeMaXevVCdy65yAoVykZCZCd8';
+
+mkdirp('downloadedPics/', function(err) { 
+
+    // path was created unless there was error
+
+});
 
 FB.setAccessToken(access_token);
 
