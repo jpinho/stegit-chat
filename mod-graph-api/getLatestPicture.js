@@ -1,9 +1,13 @@
 var FB = require('fb');
-
-var access_token = 'CAACEdEose0cBAADPhjcOlA8wUeHZAZBO2VM9q6ln0RohlLTGu3wModHirwStkHuu59NpiCZC2VsGhP2pqbhkAUpxKGq9MyX4iYgPAOsi71Uab6jG79UVeIZAFA7iZCNv8Wr7iOiA9K3j16kP8RP7N0Xexm3aivv5tTxJwdqquiiGzQpIESAXErVLdqVrMfeTBCno217oZADwZDZD';
+var mkdirp = require('mkdirp');
+var access_token = 'CAACEdEose0cBAIMWZBU591wHhTO6nSj7fex9nYLpUnOMhkZAnDUyyGKiWZAAKcePSCwNEsh0YGTZCHHzvkZBKGL7zw6mkzXv8Us6kDZCZAj6rlp3ZAY8UuBEMQPbUCCfCvdLHgVZBCsYx1fZCAKNZAhjEyU6jbWNINiy18ngH07b5vY9tDUcrkwfWIuvpxtpaxxsyeMaXevVCdy65yAoVykZCZCd8';
 FB.setAccessToken(access_token);
 
+mkdirp('downloadedPics/', function(err) { 
 
+    // path was created unless there was error
+
+});
 
 FB.api(
   '/me',
@@ -12,7 +16,7 @@ FB.api(
   function(response) {
       // Insert your code here
   
-  var LastAlbum =  response.albums.data[0];
+  var LastAlbum =  response.albums.data[0];  
   var LastAlbumName = response.albums.data[0].name;
   var LastPhotoUploadedUrl = response.albums.data[0].photos.data[0].images[0].source;
   console.log('The album ' + LastAlbumName + ' is the latest album created.');
