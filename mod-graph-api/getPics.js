@@ -1,6 +1,13 @@
 var FB = require('fb');
+var mkdirp = require('mkdirp');
 
-var access_token = 'CAACEdEose0cBAJ35bZAWZCXgBVdm8QVZBVfSPilwCr2uDoaS3KdLgUmaiLq0WyQG4GhM9ZAVqFYAZBJM551f8jffkhTUz3VpAOJjq9ZBHtNpcOAH7uQIBY8lVimfcfUSb8fAbIEnALB91CUZAOUtMVTDG5QXggrSnwigDi2RpHWgCVCc85ZCYdxriZClxXrxMip0xW8OKxfCL9TwxA0OXCxbY';
+var access_token = 'CAACEdEose0cBAIMWZBU591wHhTO6nSj7fex9nYLpUnOMhkZAnDUyyGKiWZAAKcePSCwNEsh0YGTZCHHzvkZBKGL7zw6mkzXv8Us6kDZCZAj6rlp3ZAY8UuBEMQPbUCCfCvdLHgVZBCsYx1fZCAKNZAhjEyU6jbWNINiy18ngH07b5vY9tDUcrkwfWIuvpxtpaxxsyeMaXevVCdy65yAoVykZCZCd8';
+
+mkdirp('downloadedPics/', function(err) { 
+
+    // path was created unless there was error
+
+});
 
 FB.setAccessToken(access_token);
 
@@ -9,22 +16,57 @@ FB.api('/me', 'get', {"fields":"albums{photos{images}}"}, function (res) {
     console.log(!res ? 'error occurred' : res.error);
     return;
   }
-  var theUrl= res.albums.data[0].photos.data[0].images[0].source; 
+    
+  var albumIndex;
+  var albumsPhotoList = [];
+  var numberOfAlbuns =  res.albums.data.length;
+  for (albumIndex = 0; albumIndex < numberOfAlbuns; albumIndex++) {
+	var numberOfPhotosPerAlbum = res.albums.data[albumIndex].photos.data.length;
+    console.log("Album "+ albumIndex + " has " + numberOfPhotosPerAlbum + " photos.");
+    albumsPhotoList[albumIndex] = res.albums.data[albumIndex].photos;
+  }
   
   var fs = require('fs'),
-    request = require('request');
+  request = require('request');
 
-var download = function(uri, filename, callback){
-  request.head(uri, function(err, res, body){
-    console.log('content-type:', res.headers['content-type']);
-    console.log('content-length:', res.headers['content-length']);
-
+  var download = function(uri, filename, callback){
+    request.head(uri, function(err, res, body){
+	//For debug purposes
+	if(res.headers['content-type'] != 'image/jpeg'){
+		console.log('content-type:', res.headers['content-type']);
+		console.log('content-length:', res.headers['content-length']);	
+	}    
     request(uri).pipe(fs.createWriteStream(filename)).on('close', callback);
-  });
-};
+    });
+  };
 
-download( theUrl , 'test.jpg', function(){
-  console.log('done');
-});
-  
+  var currentPhotoIndex;
+  var photoCount = 0;
+  var albumCount = 0;
+  var currentAlbum = [];
+  var albumPhotoIndex;
+  for (albumPhotoIndex = 0; albumPhotoIndex < albumsPhotoList.length; albumPhotoIndex++){
+	console.log("Extracting photos of album " + albumPhotoIndex + '.');
+	currentAlbum = albumsPhotoList[albumPhotoIndex].data;	
+	for (currentPhotoIndex = 0; currentPhotoIndex < currentAlbum.length; currentPhotoIndex++) {
+		console.log("Photo " + currentPhotoIndex +" of album " + albumPhotoIndex + " is being downloaded.");
+		var currentPhotoURL = currentAlbum[currentPhotoIndex].images[0].source;	
+			if(albumCount != albumsPhotoList.length-1){
+				download( currentPhotoURL , 'downloadedPics/Album_'+ albumPhotoIndex + '-Photo ' + currentPhotoIndex +'.jpg', function(){				
+				console.log('Photo ' + currentPhotoIndex + ' from album ' + albumCount + ' downloaded.');	
+				});
+				photoCount++;
+			}else{
+				download( currentPhotoURL , 'downloadedPics/Profile_photo ' + currentPhotoIndex +'.jpg', function(){
+				console.log('Profile photo ' + currentPhotoIndex + ' downloaded.');			
+				});
+				photoCount++;
+			}				
+	}
+	if(photoCount = currentAlbum.length){
+			console.log('Done: All photos from album ' + albumPhotoIndex +' have been downloaded.');
+			albumCount++;
+			photoCount=0;
+	}	
+   }
 });

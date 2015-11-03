@@ -10,6 +10,10 @@
   "license": "ISC",
   "devDependencies": {
     "fb": "^0.7.3",
+    "form-data": "^0.2.0",
+    "fs": "0.0.2",
+    "https": "^1.0.0",
+    "mkdirp": "^0.5.1",
     "request": "^2.65.0"
   }
 }
