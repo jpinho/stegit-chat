@@ -1,0 +1,2 @@
+# STEGNO Compression Module
+
