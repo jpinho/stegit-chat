@@ -549,6 +549,10 @@ var JpegImage = (function jpegImage() {
       }).bind(this);
       xhr.send(null);
     },
+    loadFromImageBuffer: function (imageBuffer) {
+      this.parse(imageBuffer);
+      return DU_DCT_ARRAY;
+    },
     parse: function parse(data) {
       var offset = 0, length = data.length;
       function readUint16() {

@@ -31,6 +31,17 @@ module.exports = (function() {
     return j.load(url, true);
   };
 
+  this.decodeImageBuffer = function(imageBuffer, decodingFunction) {
+    var j;
+    j = new JpegImage();
+    var DU_DCT_ARRAY = j.loadFromImageBuffer(imageBuffer);
+
+    if (DU_DCT_ARRAY[0] === undefined) {
+      return decodingFunction(DU_DCT_ARRAY[1], DU_DCT_ARRAY[1].length);
+    }
+    return decodingFunction(DU_DCT_ARRAY[0], DU_DCT_ARRAY[0].length);
+  };
+
   this.encodingDctFunction = function(DU_DCT_ARRAY, blocks, message, password, mlbc) {
     var LUMA_ARRAY, coeffs, coeffsToStuckBitStream, errorRateCaused, makeChanges, messageToHide, stream, stuckBitErrors;
 
