@@ -4,7 +4,8 @@
   "description": "Stegno Core Module used to embed and extract text into and into images with a password.",
   "main": "main.js",
   "scripts": {
-    "start": "node main.js"
+    "start": "node main.js",
+    "create-album": "node create-album.js"
   },
   "dependencies": {
     "canvas": "^1.3.0"
