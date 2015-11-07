@@ -1,6 +1,6 @@
 var FB = require('fb');
 var mkdirp = require('mkdirp');
-var access_token = 'CAACEdEose0cBAIMWZBU591wHhTO6nSj7fex9nYLpUnOMhkZAnDUyyGKiWZAAKcePSCwNEsh0YGTZCHHzvkZBKGL7zw6mkzXv8Us6kDZCZAj6rlp3ZAY8UuBEMQPbUCCfCvdLHgVZBCsYx1fZCAKNZAhjEyU6jbWNINiy18ngH07b5vY9tDUcrkwfWIuvpxtpaxxsyeMaXevVCdy65yAoVykZCZCd8';
+var access_token = 'CAACEdEose0cBAHbpOEwiwikmEs7rZAH16Ypu73hu16ZAb2ixgBelK9VF5tEZCfPXUYbK48GMU6o19PrdwNtkoOWaBw0R1H7bl3n8zZC7buxLkZC32H5HaRBpK1Dpyo7tZBnmeZC0DyhY2xW953LQZAQMl8ujqimuhDyPzgsUZAIB6u5EQ2WZBisO504CDUtGcZAvtm7jAvQjpGCtAZDZD';
 FB.setAccessToken(access_token);
 
 mkdirp('downloadedPics/', function(err) { 
@@ -11,15 +11,17 @@ mkdirp('downloadedPics/', function(err) {
 
 FB.api(
   '/me',
-  'gET',
+  'get',
   {"fields":"albums{created_time,name,photos}"},
   function(response) {
       // Insert your code here
-  
-  var LastAlbum =  response.albums.data[0];  
-  var LastAlbumName = response.albums.data[0].name;
-  var LastPhotoUploadedUrl = response.albums.data[0].photos.data[0].images[0].source;
-  console.log('The album ' + LastAlbumName + ' is the latest album created.');
+  //console.log(response.albums.data);
+  var lastAlbum =  response.albums.data[0];  
+  var lastAlbumName = response.albums.data[0].name;
+  var thisAlbumLength = response.albums.data.length;
+  var latestPhotoIndex = thisAlbumLength - 1;
+  var lastPhotoUploadedUrl = response.albums.data[0].photos.data[latestPhotoIndex].images[0].source;
+  console.log('The album ' + lastAlbumName + ' is the latest album created.');
    
   var fs = require('fs'),
   request = require('request');
@@ -35,8 +37,8 @@ FB.api(
     });
   };
   
-  download(LastPhotoUploadedUrl , 'downloadedPics/Latest_Photo.jpg', function(){				
-				console.log('The last photo from the album ' + LastAlbumName + ' has been downloaded.');	
+  download(lastPhotoUploadedUrl , 'downloadedPics/Latest_Photo.jpg', function(){				
+				console.log('The last photo from the album ' + lastAlbumName + ' has been downloaded.');	
 				});
   
 });
