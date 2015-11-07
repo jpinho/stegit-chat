@@ -18,8 +18,9 @@ FB.api(
   //console.log(response.albums.data);
   var lastAlbum =  response.albums.data[0];  
   var lastAlbumName = response.albums.data[0].name;
-  var thisAlbumLength = response.albums.data.length;
-  var latestPhotoIndex = thisAlbumLength - 1;
+  var thisAlbumLength = response.albums.data[0].count;
+  var latestPhotoIndex = thisAlbumLength--;
+  console.log('INDEX: ' + latestPhotoIndex);
   var lastPhotoUploadedUrl = response.albums.data[0].photos.data[latestPhotoIndex].images[0].source;
   console.log('The album ' + lastAlbumName + ' is the latest album created.');
    
