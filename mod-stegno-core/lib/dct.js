@@ -3,7 +3,7 @@
  * @ported-by João Pinho
  */
 require('./mlbc.js');
-require('./seedRandom.js');
+require('./seedrandom.js');
 
 module.exports = (function() {
   const JPEGEncoder = require('./jpg_encoder.js');
