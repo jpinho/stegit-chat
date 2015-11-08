@@ -26,7 +26,7 @@ rl.question("Type a photo url to upload ", function(answer) {
 
 */
 
-const access_token = 'CAACEdEose0cBACy07KYUg5rRA8ZAAwVPfCom2pNZAVSSJFh8reEFXZAdr2hjEgkuMtnUyZCbp9bLBZAvep4pWdcxPaKGgqGZALCQZCBVTBnZCQBND6LL8EyFZCuctY7zZAKCmlQLZCqF4gscADJrjZAXxipbp8Tx9IKlDihg91torqkQQrqWgiC8qOCZCxum74FY9GlqTjSgIboJMZC11gTV51Uv8Y';
+const access_token = 'CAACEdEose0cBAIHC9GaxNJLx2hOdnqm6ZCPnfZC5nZCkwjgTvZB2xappELXl1V7OGQpWAkeB3g4iZB3UZCN5ccgDv0Km0FhWLe5pzZBMZCcgE6hHLn5O66SFRfGhtsp03KksGFPU8KnSCJfbzQICXuztT4XlruxZBIrH0JNCzqRS1RNdGaKF4lGvmGEFAG5oLO0PvZATfPQfLpLsoLpfA2Etvv';
 FB.setAccessToken(access_token);
 
 function pushPhoto (path) {

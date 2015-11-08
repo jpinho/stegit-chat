@@ -14,6 +14,7 @@ const password = 'pass123';
 process.stdin.setEncoding('utf8');
 process.stdin.on('end', function() { process.stdout.write('Huston over and out!'); });
 var count = 0;
+var DateofLastPhoto = 0;
 
 process.stdin.on('readable', function() {
   const chunk = process.stdin.read();
@@ -26,30 +27,35 @@ process.stdin.on('readable', function() {
   }
   count=0;
   
-  const message = chunk;
+  var date = new Date().getTime(); 
+  date = Math.floor(date / 1000 );
+  // set the date of the last photo uplodaded, so the console don't print twice
+  DateofLastPhoto = date;
+  const message ={'text': chunk, 'timestamp': date};
   const imagePath = __dirname + '/' + imagePool[parseInt(Math.floor(Math.random() * (imagePool.length - 1)))];
-  log(imagePath);
+
   const imageData = fs.readFileSync(imagePath);
   
   // log('#1 - attempting to encode message into image with password: "' + password + '"');
   var imgDataUrlEncoded = Utils.encodeData(
-	  StegitLib.getImageDataFromFile(imagePath), 75, Utils.createEncodingDctFunction(message, password, mlbcFn));
+	  StegitLib.getImageDataFromFile(imagePath), 75, Utils.createEncodingDctFunction(JSON.stringify(message), password, mlbcFn));
 
   var regex = /^data:.+\/(.+);base64,(.*)$/;
   var matches = imgDataUrlEncoded.match(regex);
 
   var ext = matches[1];
   var data = matches[2];
+ 
   var buffer = new Buffer(data, 'base64');
   fs.writeFileSync(__dirname + '/encoded-image.' + ext, buffer);
   // log('encoded file saved, process finished!\n');
 
-  process.stdout.write('[you]: ' + chunk);
+  //process.stdout.write('[you]: ' + chunk);
 
   // log('pushing photo to facebook');
   pushPhoto(__dirname + '/encoded-image.' + ext)
     .then(function(pushResult){
-      process.stdout.write('[sent]');
+      //process.stdout.write('[sent]');
     });
 });
 
@@ -62,7 +68,12 @@ setInterval(function(){
       var arrBuffer = new Uint8Array(buffEncodedImage)
       var message = Utils.decodeImageBuffer(arrBuffer, Utils.createDecodingDctFunction(password, mlbcFn));
       //log('message found is: ' + message);
-      process.stdout.write('[update] ' + message);
+      var messageParsed = JSON.parse(message);
+      // not the best way TODO, improve later
+      if(DateofLastPhoto < messageParsed.timestamp){
+        process.stdout.write('[update] ' + messageParsed.text );
+        DateofLastPhoto = messageParsed.timestamp;
+      }
     }).
     catch(function(){
       log('error on pull');
