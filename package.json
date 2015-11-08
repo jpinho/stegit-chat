@@ -16,7 +16,8 @@
     "https": "^1.0.0",
     "mkdirp": "^0.5.1",
     "promise": "^7.0.4",
-    "request": "^2.65.0"
+    "request": "^2.65.0",
+    "webworker-threads": "^0.6.2"
   },
   "repository": {
     "type": "git",

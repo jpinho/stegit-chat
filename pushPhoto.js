@@ -4,6 +4,7 @@ const https = require('https'); //Https module of Node.js
 const FormData = require('form-data'); //Pretty multipart form maker.
 const readline = require('readline');
 const Promise = require('promise');
+const log = require('./lib/console-tweak.js');
 
 // for a readable Stream
 //https://nodejs.org/api/process.html#process_process_stdin
@@ -25,7 +26,7 @@ rl.question("Type a photo url to upload ", function(answer) {
 
 */
 
-const access_token = 'CAACEdEose0cBAJSjKzMeSoEgD0p4tEtKZA4oEGQgjX8ipU9bGdQEZC3bYSMbK08tlNSuEodCyIHfA4KfudMZAHoKZBR10HXiZBMdrXca7X5MiUw0g1XCVGC5lKxa4PBmwLTvcQugGsmOrZCWPkuBFnp9vCZCDWitCnm0PQ8ZBXusqX1RZButBhoWr3hs5VjIDUs7W6CDmgcUHRlNn4yntjK0x';
+const access_token = 'CAACEdEose0cBACy07KYUg5rRA8ZAAwVPfCom2pNZAVSSJFh8reEFXZAdr2hjEgkuMtnUyZCbp9bLBZAvep4pWdcxPaKGgqGZALCQZCBVTBnZCQBND6LL8EyFZCuctY7zZAKCmlQLZCqF4gscADJrjZAXxipbp8Tx9IKlDihg91torqkQQrqWgiC8qOCZCxum74FY9GlqTjSgIboJMZC11gTV51Uv8Y';
 FB.setAccessToken(access_token);
 
 function pushPhoto (path) {
