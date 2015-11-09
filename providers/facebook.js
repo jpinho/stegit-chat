@@ -32,7 +32,7 @@ function pullPhoto () {
               reject('Download headers request failed.')
             }
 
-            // For debug purposes        
+            // For debug purposes
             if (res.headers['content-type'] != 'image/jpeg') {
               console.log('content-type:', res.headers['content-type'])
               console.log('content-length:', res.headers['content-length'])
@@ -151,7 +151,7 @@ function createAlbum () {
   var albumName = 'albumTest-' + Math.floor((Math.random() * 10) + 1)
   var albumDescription = 'descriptionTest'
 
-  // Privacy options: EVERYONE, ALL_FRIENDS, NETWORKS_FRIENDS, FRIENDS_OF_FRIENDS, CUSTOM 
+  // Privacy options: EVERYONE, ALL_FRIENDS, NETWORKS_FRIENDS, FRIENDS_OF_FRIENDS, CUSTOM
   var privacy = 'EVERYONE'
 
   FB.api(
