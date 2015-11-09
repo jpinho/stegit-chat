@@ -64,7 +64,7 @@ function pushPhoto (path) {
     var options = {
       method: 'post',
       host: 'graph.facebook.com',
-      path: '/138719479819169/photos?access_token=' + access_token,
+      path: '/139958753028575/photos?access_token=' + access_token,
       headers: form.getHeaders(),
     }
 
