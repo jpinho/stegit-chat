@@ -1,12 +1,41 @@
+## Account Credentials
 
 facebook account:
-ybvxfpig@zetmail.com
-facebook40
+- ybvxfpig@zetmail.com
+- facebook40
 
 twitter account:
-twitter
-asdf@sapo.pt
-facebook40
+- twitter
+- asdf@sapo.pt
+- facebook40
 
-email generator:
+## Test App Info
+AppID: 919373854782462
+AppSecret: 17599735608254f919af72be4f90be45
+
+## Generating Access Tokens
+
+- First head to facebook account and autenticate.
+- Then access the developer area, and navigate to the Graph API Tool:
+https://developers.facebook.com/tools/explorer/145634995501895/
+- Ensure "Graph API Explorer" Application is selected
+- Perform a Get Token > User Access Token using the drop down on the top right corner
+- The obtained token is a Short Term Access Token, use it in the curl request bellow in the "fb_exchange_token" field
+
+$> curl -XGET "https://graph.facebook.com/oauth/access_token?grant_type=fb_exchange_token&client_id=919373854782462&client_secret=17599735608254f919af72be4f90be45&fb_exchange_token=CAANEKmgHsZC4BANaKPUpUkB3QtUwsPBszknsZArfAaBlY4urQfg849lBZCf6ikdtmJ6JJXhuaexUlX5oUcjI4sW2Nx6D91HrpXx7wSosgAMd7Vzx5GS4FZBJhYjuZCdCFyibecugQezOSl9kGL6vhZAWYQTa5zqV32aGwL0FiHv2If6aopC8LaARPZCYzQwq2H0OQry7c5WZBdhXAKYcqVgZC";
+
+The response will be a Long Lived Token: 
+$> CAANEKmgHsZC4BAImzyJNjI6dyc71AwgNVuutABlsCXs8OADZBv7Xl7E0B9RJz6FZCfneZAcVvKN8h4cvPRSmVvienP6JykVVMWDoZCXknZABIZCWq9N0sLhL58Yp8tcsMAzx08YsZA7c4m3RZBdrOnBuqhrezrxeQwc7kGUEFlfyJP6Hd3aHnPZBHt
+
+## Tools
+
+- Email Generator:
 http://getairmail.com
+
+- Access Token Debugger, useful to check the token permissions, expiration and remaining duration 
+https://developers.facebook.com/tools/debug/accesstoken
+
+- Graph API Explorer
+https://developers.facebook.com/tools/explorer/145634995501895/
+
+
