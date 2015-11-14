@@ -1,5 +1,8 @@
+'use strict'
+
 // imports
 const fs = require('fs')
+const path = require('path')
 const StegitLib = require('./lib/stegit-lib.js')
 const mlbcFn = require('./lib/mlbcFunction.js')
 const Utils = require('./lib/dct.js')
@@ -25,7 +28,7 @@ process.stdin.on('readable', function() {
   // set the date of the last photo uplodaded, so the console don't print twice
   DateofLastPhoto = date;
   const message ={'text': chunk, 'timestamp': date};
-  const imagePath = __dirname + '/' + imagePool[parseInt(Math.floor(Math.random() * (imagePool.length - 1)))];
+  const imagePath = path.join('../media', imagePool[parseInt(Math.floor(Math.random() * (imagePool.length - 1)))]);
 
   const imageData = fs.readFileSync(imagePath);
 
@@ -39,13 +42,13 @@ process.stdin.on('readable', function() {
   var ext = matches[1];
   var data = matches[2];
   var buffer = new Buffer(data, 'base64');
-  fs.writeFileSync(__dirname + '/encoded-image.' + ext, buffer);
+  fs.writeFileSync(path.join('../temp', 'encoded-image.' + ext), buffer);
   // log('encoded file saved, process finished!\n');
 
   //process.stdout.write('[you]: ' + chunk);
 
   // log('pushing photo to facebook')
-  SocialNetworkProvider.pushPhoto(__dirname + '/encoded-image.' + ext)
+  SocialNetworkProvider.pushPhoto(path.join('../temp', 'encoded-image.' + ext))
     .then(function(pushResult){
       //process.stdout.write('[sent]');
     });
