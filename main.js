@@ -4,8 +4,7 @@ const StegitLib = require('./lib/stegit-lib.js')
 const mlbcFn = require('./lib/mlbcFunction.js')
 const Utils = require('./lib/dct.js')
 const log = require('./lib/console-tweak.js')
-const pushPhoto = require('./providers/facebook.js').pushPhoto
-const pullPhoto = require('./providers/facebook.js').pullPhoto
+const SocialNetworkProvider = require('./providers/facebook.js')
 const Promise = require('promise')
 const Worker = require('webworker-threads').Worker
 
@@ -13,19 +12,13 @@ const imagePool = ['mini.jpg', 'mini.jpg', 'mini.jpg', 'alvin.jpg', 'alvin.jpg',
 const password = 'pass123';
 process.stdin.setEncoding('utf8');
 process.stdin.on('end', function() { process.stdout.write('Huston over and out!'); });
-var count = 0;
 var DateofLastPhoto = 0;
 
 process.stdin.on('readable', function() {
   const chunk = process.stdin.read();
   if (chunk == null || (chunk!==null && chunk.trim().length === 0)) {
-    if (++count === 5) {
-      count = 0;
-      process.stdout.write('will you write something eventually will you?!');
-    }
     return;
   }
-  count=0;
 
   var date = new Date().getTime();
   date = Math.floor(date / 1000 );
@@ -52,22 +45,24 @@ process.stdin.on('readable', function() {
   //process.stdout.write('[you]: ' + chunk);
 
   // log('pushing photo to facebook')
-  pushPhoto(__dirname + '/encoded-image.' + ext)
+  SocialNetworkProvider.pushPhoto(__dirname + '/encoded-image.' + ext)
     .then(function(pushResult){
       //process.stdout.write('[sent]');
     });
 });
 
 setInterval(function(){
-  pullPhoto().
+  SocialNetworkProvider.pullPhoto().
     then(function(pullResult) {
       //log('pull result was ' + pullResult);
       var encodedImagePath = pullResult;
       var buffEncodedImage = fs.readFileSync(encodedImagePath);
       var arrBuffer = new Uint8Array(buffEncodedImage)
       var message = Utils.decodeImageBuffer(arrBuffer, Utils.createDecodingDctFunction(password, mlbcFn));
+
       //log('message found is: ' + message);
       var messageParsed = JSON.parse(message);
+
       // not the best way TODO, improve later
       if(DateofLastPhoto < messageParsed.timestamp){
         process.stdout.write('[update] ' + messageParsed.text );
