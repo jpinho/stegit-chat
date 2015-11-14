@@ -3,84 +3,70 @@ const mkdirp = require('mkdirp')
 const fs = require('fs')
 const request = require('request')
 const Promise = require('promise')
-const https = require('https'); // Https module of Node.js
-const FormData = require('form-data'); // Pretty multipart form maker.
+const https = require('https');
+const FormData = require('form-data');
 const log = require('../lib/console-tweak.js')
 
-const access_token = fs.readFileSync('./facebook.token', 'utf8')
+const access_token = fs.readFileSync('../facebook.token', 'utf8')
 FB.setAccessToken(access_token)
-
-mkdirp('temp/', function (err) {})
+mkdirp('../temp/', null)
 
 function pullPhoto () {
+  let graphQuery = 'albums{name,count,photos.limit(999999){images}}'
+
   return new Promise(function (resolve, reject) {
-    FB.api(
-      '/me',
-      'get',
-      {'fields': 'albums{name,count,photos.limit(999999){images}}'},
-      function (response) {
-        var lastAlbum = response.albums.data[0]
-        var lastAlbumName = response.albums.data[0].name
-        var thisAlbumLength = response.albums.data[0].count
-        var latestPhotoIndex = thisAlbumLength - 1
-        var lastPhotoUploadedUrl = response.albums.data[0].photos.data[latestPhotoIndex].images[0].source
-        console.log('The album ' + lastAlbumName + ' is the latest album created.')
+    FB.api('/me', 'get', {'fields': graphQuery}, function (response) {
+      let lastAlbum = response.albums.data[0]
+      let lastAlbumName = response.albums.data[0].name
+      let thisAlbumLength = response.albums.data[0].count
+      let latestPhotoIndex = thisAlbumLength - 1
+      let lastPhotoUploadedUrl = response.albums.data[0].photos.data[latestPhotoIndex].images[0].source
+      console.log('pullPhoto: latest album created is "', lastAlbumName, '"')
 
-        var download = function (uri, filename, callback) {
-          request.head(uri, function (err, res, body) {
-            if (typeof res === 'undefined') {
-              reject('Download headers request failed.')
-            }
+      downloadPhoto(lastPhotoUploadedUrl , '../temp/Latest_Photo.jpg', function () {
+        resolve('../temp/Latest_Photo.jpg')
+        console.log('downloadPhoto: latest photo downloade from album "', lastAlbumName, '"')
+      })
+    })
+  })
+}
 
-            // For debug purposes
-            if (res.headers['content-type'] != 'image/jpeg') {
-              console.log('content-type:', res.headers['content-type'])
-              console.log('content-length:', res.headers['content-length'])
-            }
-
-            request(uri).pipe(fs.createWriteStream(filename)).on('close', callback)
-          })
-        }
-
-        download(lastPhotoUploadedUrl , 'temp/Latest_Photo.jpg', function () {
-          resolve('./temp/Latest_Photo.jpg')
-          console.log('The last photo from the album ' + lastAlbumName + ' has been downloaded.')
-        })
-      }
-    )
+function downloadPhoto (uri, filename, callback){
+  request.head(uri, function (err, res, body) {
+    if (typeof res === 'undefined') {
+      reject('downloadPhoto: headers request failed.')
+    }
+    if (res.headers['content-type'] != 'image/jpeg') {
+      console.log('downloadPhoto: headers content type is not image/jpeg:')
+      console.log('- content-type:', res.headers['content-type'])
+      console.log('- content-length:', res.headers['content-length'])
+    }
+    request(uri).pipe(fs.createWriteStream(filename)).on('close', callback)
   })
 }
 
 function pushPhoto (path) {
   return new Promise(function (resolve, reject) {
-    // Create multipart form
-    var form = new FormData()
-
-    // Put file
+    let form = new FormData()
     form.append('file', fs.createReadStream(path))
-    form.append('message', 'Me gusta') // Put message
+    form.append('message', 'timestamp: ' + Date.parse(new Date()))
 
-    // POST request options, notice 'path' has access_token parameter
-    var options = {
+    let options = {
       method: 'post',
       host: 'graph.facebook.com',
       path: '/139958753028575/photos?access_token=' + access_token,
       headers: form.getHeaders(),
     }
 
-    // Do POST request, callback for response
-    var request = https.request(options, function (res) {
-      resolve('ok')
-      console.log(res)
+    let request = https.request(options, function (res) {
+      resolve()
+      console.log('pushPhoto: resolve w/ response:', res)
     })
 
-    // Binds form to request
     form.pipe(request)
-
-    // If anything goes wrong (request-wise not FB)
     request.on('error', function (error) {
-      reject('ko')
-      console.log(error)
+      reject()
+      console.log('pushPhoto: reject w/ error:', error)
     })
   })
 }
@@ -92,19 +78,19 @@ function downloadAlbumPhotos () {
       return
     }
 
-    var albumIndex
-    var albumsPhotoList = []
-    var numberOfAlbuns = res.albums.data.length
+    let albumIndex
+    let albumsPhotoList = []
+    let numberOfAlbuns = res.albums.data.length
     for (albumIndex = 0; albumIndex < numberOfAlbuns; albumIndex++) {
-      var numberOfPhotosPerAlbum = res.albums.data[albumIndex].photos.data.length
+      let numberOfPhotosPerAlbum = res.albums.data[albumIndex].photos.data.length
       console.log('Album ' + albumIndex + ' has ' + numberOfPhotosPerAlbum + ' photos.')
       albumsPhotoList[albumIndex] = res.albums.data[albumIndex].photos
     }
 
-    var fs = require('fs'),
+    let fs = require('fs'),
       request = require('request')
 
-    var download = function (uri, filename, callback) {
+    let download = function (uri, filename, callback) {
       request.head(uri, function (err, res, body) {
         // For debug purposes
         if (res.headers['content-type'] != 'image/jpeg') {
@@ -115,17 +101,17 @@ function downloadAlbumPhotos () {
       })
     }
 
-    var currentPhotoIndex
-    var photoCount = 0
-    var albumCount = 0
-    var currentAlbum = []
-    var albumPhotoIndex
+    let currentPhotoIndex
+    let photoCount = 0
+    let albumCount = 0
+    let currentAlbum = []
+    let albumPhotoIndex
     for (albumPhotoIndex = 0; albumPhotoIndex < albumsPhotoList.length; albumPhotoIndex++) {
       console.log('Extracting photos of album ' + albumPhotoIndex + '.')
       currentAlbum = albumsPhotoList[albumPhotoIndex].data
       for (currentPhotoIndex = 0; currentPhotoIndex < currentAlbum.length; currentPhotoIndex++) {
         console.log('Photo ' + currentPhotoIndex + ' of album ' + albumPhotoIndex + ' is being downloaded.')
-        var currentPhotoURL = currentAlbum[currentPhotoIndex].images[0].source
+        let currentPhotoURL = currentAlbum[currentPhotoIndex].images[0].source
         if (albumCount != albumsPhotoList.length - 1) {
           download(currentPhotoURL , 'temp/Album_' + albumPhotoIndex + '-Photo ' + currentPhotoIndex + '.jpg', function () {
             console.log('Photo ' + currentPhotoIndex + ' from album ' + albumCount + ' downloaded.')
@@ -148,24 +134,15 @@ function downloadAlbumPhotos () {
 }
 
 function createAlbum () {
-  var albumName = 'albumTest-' + Math.floor((Math.random() * 10) + 1)
-  var albumDescription = 'descriptionTest'
+  const albumName = 'albumTest-' + Math.floor((Math.random() * 10) + 1)
+  const albumDescription = 'descriptionTest'
+  const privacy = 'EVERYONE'
 
-  // Privacy options: EVERYONE, ALL_FRIENDS, NETWORKS_FRIENDS, FRIENDS_OF_FRIENDS, CUSTOM
-  var privacy = 'EVERYONE'
-
-  FB.api(
-    '/me/albums',
-    'post',
-    {
-      'name': albumName,
-      'message': albumDescription,
-      'privacy': {'value': privacy}
-    },
+  FB.api('/me/albums', 'post',
+    {'name': albumName, 'message': albumDescription, 'privacy': {'value': privacy}},
     function (response) {
       if (!response || response.error) {
         console.log(!response ? 'error: No album created' : response.error)
-        return
       }
     }
   )
