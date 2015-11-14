@@ -192,7 +192,7 @@ module.exports = (function() {
     ctx = cvs.getContext("2d");
     ctx.drawImage(img, 0, 0);
     self.resizeImage(cvs);
-    
+
     return {
       width: cvs.width,
       height: cvs.height

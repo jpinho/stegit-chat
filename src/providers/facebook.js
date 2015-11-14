@@ -1,3 +1,5 @@
+'use strict'
+
 const FB = require('fb')
 const mkdirp = require('mkdirp')
 const fs = require('fs')
@@ -7,7 +9,7 @@ const https = require('https');
 const FormData = require('form-data');
 const log = require('../lib/console-tweak.js')
 
-const access_token = fs.readFileSync('../facebook.token', 'utf8')
+const access_token = fs.readFileSync('./facebook.token', 'utf8')
 FB.setAccessToken(access_token)
 mkdirp('../temp/', null)
 

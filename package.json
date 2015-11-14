@@ -2,10 +2,9 @@
   "name": "stegno-core-module",
   "version": "1.0.0",
   "description": "Stegno Core Module used to embed and extract text into and into images with a password.",
-  "main": "build/stegit-chat.js",
+  "main": "src/main.js",
   "scripts": {
-    "start": "babel main.js",
-    "create-album": "babel createAlbum.js"
+    "start": "sh scripts/run.sh"
   },
   "dependencies": {
     "btoa": "^1.1.2",
@@ -20,15 +19,13 @@
     "webworker-threads": "^0.6.2"
   },
   "devDependencies": {
+    "babel": "~5.0.0",
     "babel-cli": "^6.1.18",
-    "babel-core": "^6.1.21",
-    "babel-loader": "^6.1.0",
+    "babel-eslint": "~4.0.5",
+    "babel-loader": "~5.0.0",
+    "json-loader": "^0.5.3",
+    "request": "^2.65.0",
     "webpack": "^1.12.6"
-  },
-  "babel": {
-    "presets": [
-      "es2015"
-    ]
   },
   "repository": {
     "type": "git",

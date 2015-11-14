@@ -108,7 +108,7 @@
   // flatten()
   // Converts an object tree to nested arrays of strings.
   //
-  /** @param {Object=} result 
+  /** @param {Object=} result
     * @param {string=} prop
     * @param {string=} typ */
   function flatten(obj, depth, result, prop, typ) {
@@ -129,7 +129,7 @@
   // Mixes a string seed into a key that is an array of integers, and
   // returns a shortened string seed that is equivalent to the result key.
   //
-  /** @param {number=} smear 
+  /** @param {number=} smear
     * @param {number=} j */
   function mixkey(seed, key, smear, j) {
     seed += '';                         // Ensure the seed is a string
