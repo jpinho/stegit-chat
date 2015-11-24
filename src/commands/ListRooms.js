@@ -1,0 +1,10 @@
+const fs = require('fs')
+const path = require('path')
+const log = require('../components/helpers/console-tweak.js')
+
+log('Rooms registeres:')
+log('- Room 1')
+log('- Room 2')
+log('- Room 3')
+log('- Room 4')
+log('- Room 5')

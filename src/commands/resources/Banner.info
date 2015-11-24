@@ -1,0 +1,22 @@
+
+  _____ _             _____ _      _____ _           _
+ / ____| |           |_   _| |    / ____| |         | |
+| (___ | |_ ___  __ _  | | | |_  | |    | |__   __ _| |_
+ \___ \| __/ _ \/ _` | | | | __| | |    | '_ \ / _` | __|
+ ____) | ||  __/ (_| |_| |_| |_  | |____| | | | (_| | |_
+|_____/ \__\___|\__, |_____|\__|  \_____|_| |_|\__,_|\__|
+                  __/ |
+                 |___/
+
+----------------------------------------------------------------------------
+
+Welcome! To execute a command write `npm run` followed by the command alias.
+
+1 - Change Username (chguser <new-user-name>)
+2 - List Rooms (lstrooms)
+3 - Generate New Room (genroom)
+4 - Join Room (joinroom <room-uri>)
+5 - Register New Room (regnroom <room-uri> <room-secret>)
+6 - Help (help)
+
+----------------------------------------------------------------------------
