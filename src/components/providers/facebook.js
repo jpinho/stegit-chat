@@ -144,24 +144,93 @@ function downloadAlbumPhotos () {
   })
 }
 
-function createAlbum () {
-  const albumName = 'albumTest-' + Math.floor((Math.random() * 10) + 1)
-  const albumDescription = 'descriptionTest'
-  const privacy = 'EVERYONE'
-
-  FB.api('/me/albums', 'post',
-    {'name': albumName, 'message': albumDescription, 'privacy': {'value': privacy}},
-    function (response) {
-      if (!response || response.error) {
-        console.log(!response ? 'error: No album created' : response.error)
+function listRooms () {
+  console.log('Rooms registeres:')
+  let roomList = [];
+  let roomIndex = 0;
+  let graphQuery = 'albums{id,name,link}';
+  FB.api(
+     '/me',
+     'get',
+     {
+     'fields': graphQuery
+     },
+     function (response) {
+      if(!response || response.error) {
+         console.log(!response ? 'error: No rooms available' : response.error);
+         reject(response.error);
+         return;
       }
-    }
-  )
+      for (roomIndex = 0; roomIndex <= response.albums.data.length-1; roomIndex++) {
+           roomList[roomIndex] = response.albums.data[roomIndex];
+           console.log('Room Name: '+ roomList[roomIndex].name + '\n' + 'Room URI: ' + roomList[roomIndex].link + '\n' + '----------------------------------------------');
+      }
+  })
+}
+
+function generateRoom() {
+  var albumName = '';
+  var albumDescription = 'descriptionTest';
+  //Privacy options: EVERYONE, ALL_FRIENDS, NETWORKS_FRIENDS, FRIENDS_OF_FRIENDS, CUSTOM 
+  var privacy = 'EVERYONE';
+  var albumIndex = 0;
+  return new Promise(function (resolve, reject) {
+     var rl = readline.createInterface({
+        input: process.stdin,
+        output: process.stdout
+     });
+     rl.question("Type the name of the new album ", function(answer) {
+         console.log("Name: ", answer );
+         albumName =  answer;
+         FB.api(
+           "/me/albums",
+           "post",
+           { 
+           //"fields":"albums{id}"      
+           "name": albumName,
+           "message": albumDescription,
+           "privacy": {'value': privacy}
+           },
+           function (response) { 
+             if(!response || response.error) {
+                console.log(!response ? 'error: No album created' : response.error);
+                reject(response.error);
+                return;
+             }
+            resolve('ok');
+           }
+          );
+        rl.close();
+     });
+  }).then(function(response) {
+     return new Promise(function (resolve, reject) {    
+      FB.api(
+         "/me",
+         "get",
+        {
+        'fields': 'albums{name,id}'
+        },
+        function (response) {
+          while(response.albums.data[albumIndex].name != albumName){
+            ++albumIndex;
+              }
+          var albumID = response.albums.data[albumIndex].id;
+          console.log('ID is: ' + albumID + ' and album name is: ' + response.albums.data[albumIndex].name);
+          if(!response || response.error) {
+              console.log(!response ? 'error: Could not retrieve album ID' : response.error);
+              reject(response.error);
+           }
+          resolve(albumID);
+        }
+      );
+    });
+   });
 }
 
 module.exports = {
   pushPhoto: pushPhoto,
   pullPhoto: pullPhoto,
   downloadAlbumPhotos: downloadAlbumPhotos,
-  createAlbum: createAlbum
+  listRooms: listRooms,
+  generateRoom: generateRoom
 }
