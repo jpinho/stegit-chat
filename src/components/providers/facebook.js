@@ -1,5 +1,6 @@
 'use strict'
 
+const path = require('path');
 const FB = require('fb')
 const mkdirp = require('mkdirp')
 const fs = require('fs')
@@ -7,27 +8,35 @@ const request = require('request')
 const Promise = require('promise')
 const https = require('https');
 const FormData = require('form-data');
-const log = require('../lib/console-tweak.js')
+const log = require('../helpers/console-tweak.js')
 
-const access_token = fs.readFileSync('./facebook.token', 'utf8')
+const TEMP_PATH = path.join('.', '../../../temp')
+const access_token = fs.readFileSync(__dirname + '/../../config/facebook.token', 'utf8')
 FB.setAccessToken(access_token)
-mkdirp('../temp/', null)
+mkdirp(TEMP_PATH, null)
 
 function pullPhoto () {
   let graphQuery = 'albums{name,count,photos.limit(999999){images}}'
 
   return new Promise(function (resolve, reject) {
     FB.api('/me', 'get', {'fields': graphQuery}, function (response) {
-      let lastAlbum = response.albums.data[0]
-      let lastAlbumName = response.albums.data[0].name
-      let thisAlbumLength = response.albums.data[0].count
-      let latestPhotoIndex = thisAlbumLength - 1
-      let lastPhotoUploadedUrl = response.albums.data[0].photos.data[latestPhotoIndex].images[0].source
-      console.log('pullPhoto: latest album created is "', lastAlbumName, '"')
-
-      downloadPhoto(lastPhotoUploadedUrl , '../temp/Latest_Photo.jpg', function () {
-        resolve('../temp/Latest_Photo.jpg')
-        console.log('downloadPhoto: latest photo downloade from album "', lastAlbumName, '"')
+      let lastAlbum, lastAlbumName, thisAlbumLength, latestPhotoIndex, lastPhotoUploadedUrl;
+      try  {
+        lastAlbum = response.albums.data[0]
+        lastAlbumName = response.albums.data[0].name
+        thisAlbumLength = response.albums.data[0].count
+        latestPhotoIndex = thisAlbumLength - 1
+        lastPhotoUploadedUrl = response.albums.data[0].photos.data[latestPhotoIndex].images[0].source
+        console.log('pullPhoto: latest album created is "', lastAlbumName, '"')
+      }
+      catch (ex) {
+        reject(ex)
+        return
+      }
+      let targetPath = path.join(TEMP_PATH, 'Latest_Photo.jpg')
+      downloadPhoto(lastPhotoUploadedUrl , targetPath, function () {
+        resolve(targetPath)
+        return
       })
     })
   })
@@ -115,12 +124,12 @@ function downloadAlbumPhotos () {
         console.log('Photo ' + currentPhotoIndex + ' of album ' + albumPhotoIndex + ' is being downloaded.')
         let currentPhotoURL = currentAlbum[currentPhotoIndex].images[0].source
         if (albumCount != albumsPhotoList.length - 1) {
-          download(currentPhotoURL , 'temp/Album_' + albumPhotoIndex + '-Photo ' + currentPhotoIndex + '.jpg', function () {
+          download(currentPhotoURL , path.join(TEMP_PATH, 'Album_' + albumPhotoIndex + '-Photo ' + currentPhotoIndex + '.jpg'), function () {
             console.log('Photo ' + currentPhotoIndex + ' from album ' + albumCount + ' downloaded.')
           })
           photoCount++
         } else {
-          download(currentPhotoURL , 'temp/Profile_photo ' + currentPhotoIndex + '.jpg', function () {
+          download(currentPhotoURL , path.join(TEMP_PATH, 'Profile_photo ' + currentPhotoIndex + '.jpg'), function () {
             console.log('Profile photo ' + currentPhotoIndex + ' downloaded.')
           })
           photoCount++

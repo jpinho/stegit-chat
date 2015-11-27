@@ -2,9 +2,15 @@
   "name": "stegno-core-module",
   "version": "1.0.0",
   "description": "Stegno Core Module used to embed and extract text into and into images with a password.",
-  "main": "src/main.js",
+  "main": "src/commands/ChatMenu.js",
   "scripts": {
-    "start": "sh scripts/run.sh"
+    "start": "node --harmony src/commands/ChatMenu.js",
+    "chguser": "node --harmony src/commands/ChangeUsername.js",
+    "lstrooms": "node --harmony src/commands/ListRooms.js",
+    "genroom": "node --harmony src/commands/GenerateNewRoom.js",
+    "joinroom": "node --harmony src/commands/JoinRoom.js",
+    "regnroom": "node --harmony src/commands/RegisterRoom.js",
+    "help": "npm start"
   },
   "dependencies": {
     "btoa": "^1.1.2",
@@ -15,17 +21,15 @@
     "https": "^1.0.0",
     "mkdirp": "^0.5.1",
     "promise": "^7.0.4",
+    "readline": "^1.2.0",
     "request": "^2.65.0",
     "webworker-threads": "^0.6.2"
   },
   "devDependencies": {
-    "babel": "~5.0.0",
-    "babel-cli": "^6.1.18",
-    "babel-eslint": "~4.0.5",
-    "babel-loader": "~5.0.0",
+    "clear": "0.0.1",
+    "hot-reload": "^3.0.2",
     "json-loader": "^0.5.3",
-    "request": "^2.65.0",
-    "webpack": "^1.12.6"
+    "request": "^2.65.0"
   },
   "repository": {
     "type": "git",

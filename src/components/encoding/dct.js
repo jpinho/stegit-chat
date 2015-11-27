@@ -1,14 +1,14 @@
 /**
- * DCT module from secretbook.
+ * DCT module from SecretBook
  * @ported-by João Pinho
  */
 require('./mlbc.js');
-require('./seedrandom.js');
+require('../helpers/seed-random.js');
+const JPEGEncoder = require('./jpg-encoder.js');
+const JpegImage = require('./jpg-decoder.js');
+const Canvas = require('canvas');
 
 module.exports = (function() {
-  const JPEGEncoder = require('./jpg_encoder.js');
-  const JpegImage = require('./jpg_decoder.js');
-  const Canvas = require('canvas');
   const Image = Canvas.Image;
 
   this.encodeData = function(theImgData, qf, dctFunction) {

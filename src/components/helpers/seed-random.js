@@ -1,3 +1,4 @@
+//
 // seedrandom.js version 2.0.
 // Author: David Bau 4/2/2011
 //
