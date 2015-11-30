@@ -15,8 +15,8 @@ Welcome! To execute a command write `npm run` followed by the command alias.
 1 - Change Username (chguser <new-user-name>)
 2 - List Rooms (lstrooms)
 3 - Generate New Room (genroom)
-4 - Join Room (joinroom <room-uri>)
-5 - Register New Room (regnroom <room-uri> <room-secret>)
+4 - Join Room (joinroom <room-id>)
+5 - Register New Room (regnroom <room-id> <room-secret>)
 6 - Help (help)
 
 ----------------------------------------------------------------------------
