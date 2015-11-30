@@ -2,7 +2,6 @@
 
 const fs = require('fs')
 const path = require('path')
-const clear = require('clear')
 const ImageUtils = require('../components/helpers/image-utils.js')
 const mlbcFn = require('../components/encoding/mlbc-fn.js')
 const DecodingUtils = require('../components/encoding/dct.js')
@@ -27,11 +26,11 @@ process.stdin.on('readable', function() {
   let nRetries = 5
   while (nRetries > 0) {
     var date = new Date().getTime()
-    date = Math.floor(date / 1000 )
+    date = Math.floor(date / 1000)
     // set the date of the last photo uplodaded, so the console don't print twice
     DateofLastPhoto = date
     const message ={'text': chunk, 'timestamp': date}
-    const imagePath = path.join(__dirname, '../../media', imagePool[parseInt(Math.floor(Math.random() * (imagePool.length - 1)))])
+    const imagePath = path.join('./media', imagePool[parseInt(Math.floor(Math.random() * (imagePool.length - 1)))])
     const imageData = fs.readFileSync(imagePath)
 
     try {
@@ -44,13 +43,13 @@ process.stdin.on('readable', function() {
       var ext = matches[1]
       var data = matches[2]
       var buffer = new Buffer(data, 'base64')
-      fs.writeFileSync(path.join(__dirname, '../../temp', 'encoded-image.' + ext), buffer)
+      fs.writeFileSync(path.join('./temp', 'encoded-image.' + ext), buffer)
 
       // log('encoded file saved, process finished!\n')
       // process.stdout.write('[you]: ' + chunk)
 
       nRetries = 0
-      SocialNetworkProvider.pushPhoto(path.join(__dirname, '../../temp', 'encoded-image.' + ext))
+      SocialNetworkProvider.pushPhoto(path.join('./temp', 'encoded-image.' + ext))
         .then(function(pushResult){
           // process.stdout.write('[sent]')
         })
@@ -79,3 +78,4 @@ setInterval(function(){
       }
     })
 }, REFRESH_PERIOD * 1000)
+

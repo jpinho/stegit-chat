@@ -10,8 +10,8 @@ const https = require('https');
 const FormData = require('form-data');
 const log = require('../helpers/console-tweak.js')
 
-const TEMP_PATH = path.join('.', '../../../temp')
-const access_token = fs.readFileSync(__dirname + '/../../config/facebook.token', 'utf8')
+const TEMP_PATH = './temp'
+const access_token = fs.readFileSync('./src/config/facebook.token', 'utf8')
 FB.setAccessToken(access_token)
 mkdirp(TEMP_PATH, null)
 
