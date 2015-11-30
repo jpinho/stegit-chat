@@ -157,13 +157,13 @@ function listRooms () {
      },
      function (response) {
       if(!response || response.error) {
-         console.log(!response ? 'error: No rooms available' : response.error);
+         log(!response ? 'error: No rooms available' : response.error);
          reject(response.error);
          return;
       }
       for (roomIndex = 0; roomIndex <= response.albums.data.length-1; roomIndex++) {
            roomList[roomIndex] = response.albums.data[roomIndex];
-           console.log('Room Name: '+ roomList[roomIndex].name + '\n' + 'Room URI: ' + roomList[roomIndex].link + '\n' + '----------------------------------------------');
+           log('room: '+ roomList[roomIndex].name + '\nid: ' + roomList[roomIndex].id + '\n' + '----------------------------------------------');
       }
   })
 }
