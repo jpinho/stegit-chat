@@ -6,6 +6,7 @@ const mkdirp = require('mkdirp')
 const fs = require('fs')
 const request = require('request')
 const Promise = require('promise')
+const readline = require('readline')
 const https = require('https');
 const FormData = require('form-data');
 const log = require('../helpers/console-tweak.js')
@@ -145,7 +146,7 @@ function downloadAlbumPhotos () {
 }
 
 function listRooms () {
-  console.log('Rooms registeres:')
+  log('Rooms registered:')
   let roomList = [];
   let roomIndex = 0;
   let graphQuery = 'albums{id,name,link}';
@@ -169,18 +170,18 @@ function listRooms () {
 }
 
 function generateRoom() {
-  var albumName = '';
-  var albumDescription = 'descriptionTest';
+  let albumName = '';
+  let albumDescription = 'descriptionTest';
   //Privacy options: EVERYONE, ALL_FRIENDS, NETWORKS_FRIENDS, FRIENDS_OF_FRIENDS, CUSTOM 
-  var privacy = 'EVERYONE';
-  var albumIndex = 0;
+  let privacy = 'EVERYONE';
+  let albumIndex = 0;
   return new Promise(function (resolve, reject) {
-     var rl = readline.createInterface({
+     let rl = readline.createInterface({
         input: process.stdin,
         output: process.stdout
      });
      rl.question("Type the name of the new album ", function(answer) {
-         console.log("Name: ", answer );
+         log("Name: ", answer );
          albumName =  answer;
          FB.api(
            "/me/albums",
@@ -193,7 +194,7 @@ function generateRoom() {
            },
            function (response) { 
              if(!response || response.error) {
-                console.log(!response ? 'error: No album created' : response.error);
+                log(!response ? 'error: No album created' : response.error);
                 reject(response.error);
                 return;
              }
@@ -214,10 +215,10 @@ function generateRoom() {
           while(response.albums.data[albumIndex].name != albumName){
             ++albumIndex;
               }
-          var albumID = response.albums.data[albumIndex].id;
-          console.log('ID is: ' + albumID + ' and album name is: ' + response.albums.data[albumIndex].name);
+          let albumID = response.albums.data[albumIndex].id;
+          log('ID is: ' + albumID + ' and album name is: ' + response.albums.data[albumIndex].name);
           if(!response || response.error) {
-              console.log(!response ? 'error: Could not retrieve album ID' : response.error);
+              log(!response ? 'error: Could not retrieve album ID' : response.error);
               reject(response.error);
            }
           resolve(albumID);

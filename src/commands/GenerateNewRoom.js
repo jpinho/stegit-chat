@@ -11,13 +11,4 @@ const Promise = require('promise')
 
 const REFRESH_PERIOD = 3
 
-/*
-log('New room generated:')
-log('- uri: http://...')
-log('- secret: ...')*/
-
-//SocialNetworkProvider.generateRoom();   
-
-setInterval(function(){
-  SocialNetworkProvider.generateRoom();    
-}, REFRESH_PERIOD * 1000)
+SocialNetworkProvider.generateRoom()
