@@ -11,9 +11,10 @@ const Promise = require('promise')
 
 const REFRESH_PERIOD = 3
 const imagePool = ['mini.jpg', 'mini.jpg', 'mini.jpg', 'alvin.jpg', 'alvin.jpg', 'rio.jpg', 'rio.jpg', 'rio.jpg']
-const password = 'pass123'
+var password = 'pass123'
 const roomID = process.argv.slice(2);
 var username = 'anonymous';
+    var empty = false;
 fs.readFile('./src/commands/resources/user.txt', 'utf8', function (err,data) {
   if (err) {
     log(err);
@@ -32,8 +33,8 @@ function fetchPassword(roomID) {
     var dataFromFile = JSON.parse(data);
     for(var x in dataFromFile){
       if(dataFromFile[x].room == roomID){
-        var password = dataFromFile[x].password;
-        log('password= ' + password);
+        password = dataFromFile[x].password;
+        log('password = ' + password);
         break;
       }
     }
@@ -82,7 +83,7 @@ function startChat() {
         // process.stdout.write('[you]: ' + chunk)
 
         nRetries = 0
-        SocialNetworkProvider.pushPhoto(path.join('./temp', 'encoded-image.' + ext))
+        SocialNetworkProvider.pushPhoto(path.join('./temp', 'encoded-image.' + ext),roomID)
           .then(function(pushResult){
             // process.stdout.write('[sent]')
           })
@@ -96,6 +97,7 @@ function startChat() {
   })
 
   setInterval(function(){
+
     SocialNetworkProvider.pullPhoto(roomID).
       then(function(pullResult) {
         var encodedImagePath = pullResult
@@ -108,6 +110,11 @@ function startChat() {
         if(DateofLastPhoto < messageParsed.timestamp){
           process.stdout.write('[update] ' + messageParsed.text )
           DateofLastPhoto = messageParsed.timestamp
+        }
+      }, function(err) {
+        if(!empty){
+          log(err);
+          empty = true;
         }
       })
   }, REFRESH_PERIOD * 1000)

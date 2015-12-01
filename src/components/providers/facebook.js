@@ -12,52 +12,68 @@ const FormData = require('form-data');
 const log = require('../helpers/console-tweak.js')
 
 const TEMP_PATH = './temp'
+const ROOM_HISTORY_LENGTH = 5
 const access_token = fs.readFileSync('./src/config/facebook.token', 'utf8')
 FB.setAccessToken(access_token)
 mkdirp(TEMP_PATH, null)
 
-function pullPhoto () {
-  let graphQuery = 'albums{name,count,photos.limit(999999){images}}'
+function pullPhoto (roomID) {
+  let graphQuery = 'albums{id,name,count,photos.limit(999999){images}}'
 
   return new Promise(function (resolve, reject) {
     FB.api('/me', 'get', {'fields': graphQuery}, function (response) {
-      let lastAlbum, lastAlbumName, thisAlbumLength, latestPhotoIndex, lastPhotoUploadedUrl;
-      try  {
-        lastAlbum = response.albums.data[0]
-        lastAlbumName = response.albums.data[0].name
-        thisAlbumLength = response.albums.data[0].count
-        latestPhotoIndex = thisAlbumLength - 1
-        lastPhotoUploadedUrl = response.albums.data[0].photos.data[latestPhotoIndex].images[0].source
-        console.log('pullPhoto: latest album created is "', lastAlbumName, '"')
-      }
-      catch (ex) {
+      let lastAlbum, lastAlbumName, roomIndex, roomName, numberOfAlbuns, thisAlbumLength, latestPhotoIndex, lastPhotoUploadedUrl, canDownload;
+      try  {        
+        numberOfAlbuns = response.albums.data.length  
+        for (roomIndex = 0; roomIndex < numberOfAlbuns; roomIndex++) {   
+          if(response.albums.data[roomIndex].id == roomID){
+            if(response.albums.data[roomIndex].count != 0){
+              canDownload = 1;        
+              lastAlbum = response.albums.data[roomIndex]
+              roomName = response.albums.data[roomIndex].name
+              thisAlbumLength = response.albums.data[roomIndex].count
+              latestPhotoIndex = thisAlbumLength - 1
+              lastPhotoUploadedUrl = response.albums.data[roomIndex].photos.data[latestPhotoIndex].images[0].source
+            }else{
+              reject('Selected room is empty!')
+              canDownload = 0;
+            }
+          }
+        }
+      }catch (ex) {
+        log(ex)
         reject(ex)
         return
       }
-      let targetPath = path.join(TEMP_PATH, 'Latest_Photo.jpg')
-      downloadPhoto(lastPhotoUploadedUrl , targetPath, function () {
+
+      function downloadPhoto (uri, filename, callback){
+        request.head(uri, function (err, res, body) {
+          if (typeof res === 'undefined') {
+            reject('downloadPhoto: headers request failed.')
+          }
+          if (res.headers['content-type'] != 'image/jpeg') {
+            console.log('downloadPhoto: headers content type is not image/jpeg:')
+            console.log('- content-type:', res.headers['content-type'])
+            console.log('- content-length:', res.headers['content-length'])
+          }
+          request(uri).pipe(fs.createWriteStream(filename)).on('close', callback)
+        })
+      }
+      if(canDownload != 0){
+        let targetPath = path.join(TEMP_PATH, roomName + '_Last_Photo.jpg')
+        downloadPhoto(lastPhotoUploadedUrl , targetPath, function () {
         resolve(targetPath)
         return
-      })
+        })
+      }      
     })
   })
 }
 
-function downloadPhoto (uri, filename, callback){
-  request.head(uri, function (err, res, body) {
-    if (typeof res === 'undefined') {
-      reject('downloadPhoto: headers request failed.')
-    }
-    if (res.headers['content-type'] != 'image/jpeg') {
-      console.log('downloadPhoto: headers content type is not image/jpeg:')
-      console.log('- content-type:', res.headers['content-type'])
-      console.log('- content-length:', res.headers['content-length'])
-    }
-    request(uri).pipe(fs.createWriteStream(filename)).on('close', callback)
-  })
-}
 
-function pushPhoto (path) {
+
+
+function pushPhoto (path, roomID) {
   return new Promise(function (resolve, reject) {
     let form = new FormData()
     form.append('file', fs.createReadStream(path))
@@ -66,12 +82,13 @@ function pushPhoto (path) {
     let options = {
       method: 'post',
       host: 'graph.facebook.com',
-      path: '/139958753028575/photos?access_token=' + access_token,
+      path: '/'+roomID+'/photos?access_token=' + access_token,
       headers: form.getHeaders(),
     }
 
     let request = https.request(options, function (res) {
       resolve()
+      log('MESSAGE SENT');
       console.log('pushPhoto: resolve w/ response:', res)
     })
 
