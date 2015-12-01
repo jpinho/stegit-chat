@@ -12,7 +12,7 @@ const Promise = require('promise')
 const REFRESH_PERIOD = 3
 const imagePool = ['mini.jpg', 'mini.jpg', 'mini.jpg', 'alvin.jpg', 'alvin.jpg', 'rio.jpg', 'rio.jpg', 'rio.jpg']
 const password = 'pass123'
-const roomNumber = process.argv.slice(2);
+const roomID = process.argv.slice(2);
 var username = 'anonymous';
 fs.readFile('./src/commands/resources/user.txt', 'utf8', function (err,data) {
   if (err) {
@@ -23,7 +23,7 @@ fs.readFile('./src/commands/resources/user.txt', 'utf8', function (err,data) {
 });
 
 function startChat() {
-  log('You just joined to a new room '+ roomNumber + ' as username: ' + username +'\n');
+  log('You just joined to a new room '+ roomID + ' as username: ' + username +'\n');
   process.stdin.setEncoding('utf8')
   let DateofLastPhoto = 0
 
@@ -73,7 +73,7 @@ function startChat() {
   })
 
   setInterval(function(){
-    SocialNetworkProvider.pullPhoto().
+    SocialNetworkProvider.pullPhoto(roomID).
       then(function(pullResult) {
         var encodedImagePath = pullResult
         var buffEncodedImage = fs.readFileSync(encodedImagePath)
