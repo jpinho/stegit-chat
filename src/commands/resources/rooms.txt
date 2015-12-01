@@ -1,0 +1,1 @@
+[{"room":"123","password":"asd"},{"room":"1234","password":"asdf"}]

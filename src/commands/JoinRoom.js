@@ -19,8 +19,31 @@ fs.readFile('./src/commands/resources/user.txt', 'utf8', function (err,data) {
     log(err);
   }
   username = data;
+  fetchPassword(roomID);
+});
+
+
+function fetchPassword(roomID) {
+  fs.readFile('./src/commands/resources/rooms.txt', 'utf8', function (err,data) {
+  if (err) {
+    log(err);
+  }
+  if(data !== ''){
+    var dataFromFile = JSON.parse(data);
+    for(var x in dataFromFile){
+      if(dataFromFile[x].room == roomID){
+        var password = dataFromFile[x].password;
+        log('password= ' + password);
+        break;
+      }
+    }
+  } else {
+    log('no password was found');
+  } 
   startChat();
 });
+}
+
 
 function startChat() {
   log('You just joined to a new room '+ roomID + ' as username: ' + username +'\n');
