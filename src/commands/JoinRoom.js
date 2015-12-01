@@ -63,7 +63,7 @@ function startChat() {
       date = Math.floor(date / 1000)
       // set the date of the last photo uplodaded, so the console don't print twice
       DateofLastPhoto = date
-      const message ={'text': chunk, 'timestamp': date}
+      const message ={'text': chunk, 'timestamp': date, 'username':username}
       const imagePath = path.join('./media', imagePool[parseInt(Math.floor(Math.random() * (imagePool.length - 1)))])
       const imageData = fs.readFileSync(imagePath)
 
@@ -108,8 +108,8 @@ function startChat() {
         var messageParsed = JSON.parse(message)
 
         if(DateofLastPhoto < messageParsed.timestamp){
-          process.stdout.write('[update] ' + messageParsed.text )
-          DateofLastPhoto = messageParsed.timestamp
+          process.stdout.write('['+messageParsed.username+'] ' + messageParsed.text )
+          DateofLastPhoto = messageParsed.timestamp;
         }
       }, function(err) {
         if(!empty){
