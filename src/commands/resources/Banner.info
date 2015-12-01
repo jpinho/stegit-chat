@@ -5,12 +5,12 @@
  \___ \| __/ _ \/ _` | | | | __| | |    | '_ \ / _` | __|
  ____) | ||  __/ (_| |_| |_| |_  | |____| | | | (_| | |_
 |_____/ \__\___|\__, |_____|\__|  \_____|_| |_|\__,_|\__|
-                  __/ |
-                 |___/
+                 __/ |
+                |___/
 
 ----------------------------------------------------------------------------
 
-Welcome! To execute a command write `npm run` followed by the command alias.
+Welcome! To execute a command write 'npm run' followed by the command alias.
 
 1 - Change Username (chguser <new-user-name>)
 2 - List Rooms (lstrooms)
